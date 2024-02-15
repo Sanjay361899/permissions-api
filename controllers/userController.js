@@ -11,10 +11,10 @@ const register=async(req,res)=>{
     res.status(400).send({success:false,error:result.array()})
    }
       const dataRedundancy= await userModel.find({email:req.body.email});
-      if(!dataRedundancy){
+      if(!dataRedundancy.length){
         const name= req.body.name;
         const email=req.body.email;
-        const password=secure(req.body.password);
+        const password=await secure(req.body.password);
         const image=req.file.path;
         const data= await new userModel({
         name,
