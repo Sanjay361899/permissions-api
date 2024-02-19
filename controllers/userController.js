@@ -10,10 +10,9 @@ const secure= async(pass)=>{
 }
 
 const makeJwt=async(data)=>{
-  const jwt_sign=process.env.jwt_secret_key
-const token =jwt.sign(data,jwt_sign);
+const jwt_sign=process.env.jwt_secret_key
+const token =jwt.sign(data,jwt_sign,{expiresIn:'1d'});
 return token;
-
 }
 
 
@@ -67,7 +66,25 @@ const login=async(req,res)=>{
       res.status(400).send({success:false,message:error.message});    
   }
 }
+const getPofile=async (req,res)=>{
+  try {
+    const error=validationResult(req);
+    if(!error.isEmpty()){
+      res.status(400).send({errors:error.array()})
+    }
+    const {email}=req.body;
+    const profileData= await userModel.findOne({email});
+    if(profileData){
+      res.status(200).send({success:true,message:"profile data is fetched", data:profileData});
+    }else{
+      res.status(200).send({success:false,message:"there is no such email."})
+    }
+  } catch (error) {
+    res.status(400).send({success:false,message:error.message});
+  }
+}
 module.exports={
     register,
-    login
+    login,
+    getPofile
 }

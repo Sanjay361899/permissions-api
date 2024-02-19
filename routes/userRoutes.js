@@ -8,6 +8,7 @@ const multer=require("multer");
 const path=require("path");
 user_router.use(express.static("public"));
 const userModel = require("../models/userModel");
+const { auth } = require("../middlewares/auth.js");
 
 const checkEmail=async(req,res,next)=>{
     const data=userModel.find({email:req.body.email});
@@ -41,4 +42,5 @@ const upload=multer({storage:storage,fileFilter});
 
 user_router.post('/register',checkEmail,upload.single("image"),validator.registerValidation,userControoler.register);
 user_router.post('/login',validator.loginValidation,userControoler.login);
+user_router.post('/profile',validator.profileValidation,auth,userControoler.getPofile);
 module.exports=user_router;
