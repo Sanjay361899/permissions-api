@@ -11,7 +11,7 @@ const secure= async(pass)=>{
 
 const makeJwt=async(data)=>{
 const jwt_sign=process.env.jwt_secret_key
-const token =jwt.sign(data,jwt_sign,{expiresIn:'1d'});
+const token =jwt.sign({data},jwt_sign,{ expiresIn: '1h'});
 return token;
 }
 
@@ -83,8 +83,10 @@ const getPofile=async (req,res)=>{
     res.status(400).send({success:false,message:error.message});
   }
 }
+
 module.exports={
     register,
     login,
     getPofile
+
 }
