@@ -18,11 +18,11 @@ return token;
 
 const register=async(req,res)=>{
     try {
-      const result=validationResult(req);
-   if(!result.isEmpty()){
-    res.status(400).send({success:false,error:result.array()})
-   }
-      const dataRedundancy= await userModel.find({email:req.body.email});
+      const result= validationResult(req);
+     if(!result.isEmpty()){
+       res.status(400).send({success:false,error:result.array()})
+     }
+      const dataRedundancy= await userModel.findOne({email:req.body.email});
       if(!dataRedundancy.length){
         const name= req.body.name;
         const email=req.body.email;
@@ -54,7 +54,7 @@ const login=async(req,res)=>{
     if(userData){
      const isMatched=await bcrypt.compare(req.body.password,userData?.password);
      if(isMatched){
-      const reToken=await makeJwt(userData?.email);
+      const reToken=await makeJwt(userData);
       res.status(200).send({success:true,data:userData,token:reToken});
      }else{
       res.status(200).send({success:false,msg:"password is incorrect of email entered."})
@@ -88,5 +88,4 @@ module.exports={
     register,
     login,
     getPofile
-
 }

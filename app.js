@@ -9,7 +9,10 @@ const user_routes=require("./routes/userRoutes.js")
 app.use("/",user_routes);
 
 const admin_routes=require("./routes/adminRoutes.js")
-app.use("/",admin_routes)
+app.use("/admin",admin_routes)
+
+const common_routes=require("./routes/commonRoutes.js")
+app.use("/",common_routes)
 
 app.listen(2000,()=>{
     console.log(`Server is running on ${port}`);

@@ -11,7 +11,8 @@ const userModel = require("../models/userModel");
 const { auth } = require("../middlewares/auth.js");
 
 const checkEmail=async(req,res,next)=>{
-    const data=userModel.find({email:req.body.email});
+    const data=await userModel.findOne({email:req.body.email});
+ 
     if(data){
        res.status(400).send({success:false,message:"email already existing."});
     }else{

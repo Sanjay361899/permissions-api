@@ -3,6 +3,7 @@ const {validationResult}=require("express-validator")
 const permission=async(req,res)=>{
 try {
     const error=validationResult(req);
+    console.log("valid".error)
     if(!error.isEmpty()){
        res.status(400).send({success:false,message:error.array()});
     }
@@ -66,7 +67,7 @@ try {
     }
     const isPermissionNameExisting=await permission_model.find({
         _id:{$ne:req.body.id},
-        permission_name:req.body.permission_name
+        permission_name:{$regex:req.body.permission_name,$options:'i'}
     })
     if(isPermissionNameExisting.length){
        res.status(200).send({success:false,message:"permission name is already existing"});
