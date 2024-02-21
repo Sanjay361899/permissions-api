@@ -8,6 +8,6 @@ const { auth } = require("../middlewares/auth.js");
 const { adminAllowed } = require("../middlewares/adminAllowed.js");
 admin_router.post('/add-permission',auth,adminAllowed,validator.permissionValidator,adminController.permission);
 admin_router.get('/all-permission',auth,adminAllowed,adminController.getAllPermission);
-admin_router.post('/delete-permission',auth,adminAllowed,validator.permissionDeleteValidators,auth,adminController.deletePermission);
+admin_router.delete('/delete-permission',auth,adminAllowed,validator.permissionDeleteValidators,auth,adminController.deletePermission);
 admin_router.put('/update-permission',auth,adminAllowed,validator.permissionUpdateValidators,auth,adminController.updatePermission);
 module.exports=admin_router;

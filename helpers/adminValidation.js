@@ -13,3 +13,14 @@ exports.permissionUpdateValidators=[
 exports.categoryAddValidator=[
     check("name","you have to enter the category name.").not().isEmpty()
 ]
+exports.categoryDeleteValidator=[
+    check("id","you have to enter the category id.").not().isEmpty(),
+]
+exports.categoryUpdateValidators=[
+    check("id","you have to enter the category id.").not().isEmpty(),
+    check("category_name","you have to enter the category name.").not().isEmpty()
+]
+exports.postAddValidators=[
+    check("title","you have to enter the title.").not().isEmpty(),
+    check("description","you have to enter the description").not().isEmpty()
+]
