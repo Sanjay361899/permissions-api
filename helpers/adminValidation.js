@@ -24,3 +24,10 @@ exports.postAddValidators=[
     check("title","you have to enter the title.").not().isEmpty(),
     check("description","you have to enter the description").not().isEmpty()
 ]
+exports.postUpdateValidators=[
+    check("title","you have to enter the title.").not().isEmpty(),
+    check("description","you have to enter the description").not().isEmpty()
+]
+exports.postDeleteValidators=[
+    check("id","you have to enter the id.").not().isEmpty(),
+]
