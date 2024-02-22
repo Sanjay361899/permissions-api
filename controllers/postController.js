@@ -43,6 +43,14 @@ const deletePost= async(req,res)=>{
         res.status(400).send({success:false,message:error.message})
     }
 }
+const getPost=async(req,res)=>{
+ try {
+    const data= await postModel.find({});
+    res.status(200).send({success:true,data})
+ } catch (error) {
+    res.status(400).send({success:false,message:error.message});
+ }
+}
 const updatePost= async(req,res)=>{
     try {
         const result=validationResult(req);
@@ -64,4 +72,4 @@ const updatePost= async(req,res)=>{
         res.status(400).send({success:false,message:error.message})
     }
 }
-module.exports={addPost,deletePost,updatePost}
+module.exports={addPost,deletePost,updatePost,getPost}
