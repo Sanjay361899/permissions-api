@@ -19,7 +19,7 @@ const userSchema=mongoose.Schema({
     },
     type:{
         type:Number,
-        default:0//0=>Normal user, 1=>admin, 2=>sub-admin, 3=>editor;
+        default:0    //0=>Normal user, 1=>admin, 2=>sub-admin, 3=>editor;
     }
 })
 module.exports = mongoose.model("User",userSchema);
