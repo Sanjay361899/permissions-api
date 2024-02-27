@@ -31,3 +31,7 @@ exports.postUpdateValidators=[
 exports.postDeleteValidators=[
     check("id","you have to enter the id.").not().isEmpty(),
 ]
+exports.storeRoleValidators=[
+    check("role_name","you have to enter the role name.").not().isEmpty(),
+    check("value","you have to enter the value of role").not().isEmpty()
+]
