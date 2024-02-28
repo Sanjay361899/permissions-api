@@ -54,6 +54,7 @@ const getPost=async(req,res)=>{
 const updatePost= async(req,res)=>{
     try {
         const result=validationResult(req);
+        
         if(!result.isEmpty()){
             res.status(400).send({success:false,error:result.array()})
           }else

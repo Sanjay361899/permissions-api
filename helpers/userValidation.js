@@ -31,3 +31,15 @@ exports.loginValidation=[
 exports.profileValidation=[
     check("email","email is required").isEmail().normalizeEmail({gmail_remove_dots:true})
 ]
+exports.userDeleteValidation=[
+    check("id","id is required").not().isEmpty()
+]
+//like unlike validatrs
+exports.likeUnlikeVladation=[
+    check("user_id","user id is required").not().isEmpty(),
+    check("post_id","post id is required").not().isEmpty()
+]
+
+exports.postIdLikeVladation=[
+    check("post_id","post id is required").not().isEmpty()
+]

@@ -114,8 +114,8 @@ const updateProfile=async(req,res)=>{
         const userExist= await userModel.findOne({_id:req.body?.id})
         if(userExist){
           delete req.body.id;
-          await userModel.findByIdAndUpdate({_id:userExist.id},{$set:req.body}) 
-          res.status(200).send({success:true,message:"profile has been updated successfully", data:req.body})
+        const updatedData=  await userModel.findByIdAndUpdate({_id:userExist.id},{$set:req.body},{new:true}) 
+          res.status(200).send({success:true,message:"profile has been updated successfully", data:updatedData})
         }else{
           res.status(200).send({success:false,message:"profile doesn't exist with this id."})
         }
@@ -125,9 +125,26 @@ const updateProfile=async(req,res)=>{
     res.status(400).send({success:false,messgae:error.message})
   }
 }
+const deleteUser=async(req,res)=>{
+  try {
+    const error=validationResult(req);
+    if(!error.isEmpty()){
+      res.status(400).send({success:false,message:error.array()})
+    }
+    let existingUser= await userModel.findByIdAndDelete({_id:req.body.id})
+    if(existingUser){
+      res.status(200).send({success:true,message:"user is deleted successfully"});
+    }else{
+      res.status(200).send({success:false,message:"user is not existing."})
+    }
+  } catch (error) {
+    res.status(400).send({success:false,message:error.message})
+  }
+}
 module.exports={
     register,
     login,
     getPofile,
-    updateProfile
+    updateProfile,
+    deleteUser
 }

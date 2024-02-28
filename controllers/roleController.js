@@ -1,3 +1,4 @@
+const { validationResult } = require("express-validator");
 const roleModel = require("../models/roleModel.js")
 
 const storeRole=async (req,res)=>{
@@ -16,7 +17,7 @@ const storeRole=async (req,res)=>{
                 value
             });
             const roleSave=await roleCreated.save()
-            res.status(200).send({succes:true,message:"Role is creaed", data : roleSave});
+            res.status(200).send({succes:true,message:"Role is created", data : roleSave});
         }
     } catch (error) {
         res.status(400).send({success:false ,message:error.message})

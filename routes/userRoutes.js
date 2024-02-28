@@ -48,4 +48,5 @@ user_router.post('/login',validator.loginValidation,userControoler.login);
 user_router.post('/profile',validator.profileValidation,auth,userControoler.getPofile);
 //updation of user profile is doned here 
 user_router.put('/updateUser',auth,userControoler.updateProfile)
+user_router.delete('/deleteUser',validator.userDeleteValidation,auth,userControoler.deleteUser)
 module.exports=user_router;
