@@ -2,7 +2,8 @@ const userModel = require("../models/userModel.js");
 const bcrypt=require("bcryptjs")
 const {validationResult }=require("express-validator")
 
-const jwt=require("jsonwebtoken")
+const jwt=require("jsonwebtoken");
+const { sendMail } = require("../helpers/sendMail.js");
 
 
 
@@ -24,7 +25,7 @@ const register=async(req,res)=>{
        res.status(400).send({success:false,error:result.array()})
      }
       const dataRedundancy= await userModel.findOne({email:req.body.email});
-      if(!dataRedundancy.length){
+      if(!dataRedundancy){
         const name= req.body.name;
         const email=req.body.email;
         const password=await secure(req.body.password);
@@ -36,6 +37,25 @@ const register=async(req,res)=>{
         image
        })
      await data.save();
+     const content = `
+     <p> hi <b>`+name+`,</b> Your account is created,below is your details don't share this email with anyone.</p>
+     <table style='border-style:none'>
+        <tr>
+        <th>Name-</th>
+        <td>`+name+`</td>
+        </tr>
+        <tr>
+        <th>Email-</th>
+        <td>`+email+`</td>
+        </tr>
+        <tr>
+        <th>password-</th>
+        <td>`+req.body.password+`</td>
+        </tr>
+     </table>
+     <p>Now you can login into your account with above credentials.</p>
+     `
+     await sendMail(req.body.email,`you have been registered to permission website`,content)
       res.status(200).send({success:true,msg:"data saved",data})
       }else{
         res.status(200).send({success:false,msg:"email is already existing."})
@@ -84,9 +104,30 @@ const getPofile=async (req,res)=>{
     res.status(400).send({success:false,message:error.message});
   }
 }
-
+const updateProfile=async(req,res)=>{
+  try {
+    const error=validationResult(req);
+    if(!error.isEmpty()){
+      res.status(400).send({success:false,message:error.array()})
+    }else{
+      if(req.body.id){
+        const userExist= await userModel.findOne({_id:req.body?.id})
+        if(userExist){
+          delete req.body.id;
+          await userModel.findByIdAndUpdate({_id:userExist.id},{$set:req.body}) 
+          res.status(200).send({success:true,message:"profile has been updated successfully", data:req.body})
+        }else{
+          res.status(200).send({success:false,message:"profile doesn't exist with this id."})
+        }
+      }        
+    }
+  } catch (error) {
+    res.status(400).send({success:false,messgae:error.message})
+  }
+}
 module.exports={
     register,
     login,
-    getPofile
+    getPofile,
+    updateProfile
 }
