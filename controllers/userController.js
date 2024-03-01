@@ -6,11 +6,8 @@ const jwt=require("jsonwebtoken");
 const { sendMail } = require("../helpers/sendMail.js");
 const userPermissionModel = require("../models/userPermissionModel.js");
 const modelPermission = require("../models/modelPermission.js");
-
-
-
 const secure= async(pass)=>{
-    return await bcrypt.hash(pass,10);
+ return await bcrypt.hash(pass,10);
 }
 
 const makeJwt=async(data)=>{
@@ -146,7 +143,40 @@ const getPofile=async (req,res)=>{
     const {email}=req.body;
     const profileData= await userModel.findOne({email});
     if(profileData){
-      res.status(200).send({success:true,message:"profile data is fetched", data:profileData});
+      const result = await userModel.aggregate([
+        {$match:{
+           _id:{$ne:profileData._id} 
+        }},{
+          $lookup:{
+            from:"userpermissions",
+            localField:"_id",
+            foreignField:"user_id",
+            as:"permission"
+          }
+        },
+        {
+          $project:{
+            _id:0,
+            name:1,
+            email:1,
+            permission:{
+              $cond:{
+                if:{$isArray:"permission"},
+                then:{$arrayElemAt:["$permission",0]},
+                else:null
+              }
+            }
+          }
+        },
+        {
+          $addFields:{
+            "permission":{
+              "permission":"$permission.permission"
+            }
+          }
+        }
+      ])
+      res.status(200).send({success:true,message:"all profile  data is fetched", data:result});
     }else{
       res.status(200).send({success:false,message:"there is no such email."})
     }
@@ -172,7 +202,7 @@ const updateProfile=async(req,res)=>{
       }        
     }
   } catch (error) {
-    res.status(400).send({success:false,messgae:error.message})
+    res.status(400).send({success:false,message:error.message})
   }
 }
 const deleteUser=async(req,res)=>{
