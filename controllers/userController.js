@@ -38,8 +38,8 @@ const register=async(req,res)=>{
         password,
         image
        })
-   const savedData= await data.save();
-     const content = `
+      const savedData= await data.save();
+      const content = `
      <p> hi <b>`+name+`,</b> Your account is created,below is your details don't share this email with anyone.</p>
      <table style='border-style:none'>
         <tr>
@@ -94,7 +94,34 @@ const login=async(req,res)=>{
      const isMatched=await bcrypt.compare(req.body.password,userData?.password);
      if(isMatched){
       const reToken=await makeJwt(userData);
-      res.status(200).send({success:true,data:userData,token:reToken});
+      const result=await userModel.aggregate([
+        {
+          $match:{email:userData.email}
+        },
+        {
+          $lookup:{
+            from:"userpermissions",
+            localField:"_id",
+            foreignField:"user_id",
+            as:"permission"
+          }
+        },
+        {
+          $project:{
+            _id:0,
+            name:1,
+            email:1,
+            permission:{
+              $cond:{
+                if:{$isArray:"$permission"},
+                then:{$arrayElemAt:["$permission",0]},
+                else:null
+              }
+            }
+          }
+        }
+      ])
+      res.status(200).send({success:true,data:result,token:reToken});
      }else{
       res.status(200).send({success:false,msg:"password is incorrect of email entered."})
      } 
