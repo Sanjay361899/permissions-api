@@ -119,6 +119,11 @@ const login=async(req,res)=>{
               }
             }
           }
+        },
+        {
+          $addFields:{
+             "permission":{"permission":"$permission.permission"}
+          }
         }
       ])
       res.status(200).send({success:true,data:result,token:reToken});
