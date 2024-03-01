@@ -15,5 +15,5 @@ permission:[{
     }
 }]
 })
-module.exports=mongoose.model('Permission',permissionSchema)
+module.exports=mongoose.model('userPermission',permissionSchema)
 

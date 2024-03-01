@@ -4,6 +4,8 @@ const {validationResult }=require("express-validator")
 
 const jwt=require("jsonwebtoken");
 const { sendMail } = require("../helpers/sendMail.js");
+const userPermissionModel = require("../models/userPermissionModel.js");
+const modelPermission = require("../models/modelPermission.js");
 
 
 
@@ -36,7 +38,7 @@ const register=async(req,res)=>{
         password,
         image
        })
-     await data.save();
+   const savedData= await data.save();
      const content = `
      <p> hi <b>`+name+`,</b> Your account is created,below is your details don't share this email with anyone.</p>
      <table style='border-style:none'>
@@ -55,6 +57,22 @@ const register=async(req,res)=>{
      </table>
      <p>Now you can login into your account with above credentials.</p>
      `
+     const permission=await modelPermission.find({is_Default:1})
+     if(permission.length>0){
+      const permissionData=[];
+      permission.forEach(async element => {
+        permissionData.push({
+          permission_name:element.permission_name,
+          permission_value:[0,1,2,3]
+        })
+        
+     
+      });
+      await new userPermissionModel({
+        user_id:savedData._id,
+        permission:permissionData
+      }).save();
+     }
      await sendMail(req.body.email,`you have been registered to permission website`,content)
       res.status(200).send({success:true,msg:"data saved",data})
       }else{

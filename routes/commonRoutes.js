@@ -25,5 +25,6 @@ common_router.post("/store-role",auth,validator.storeRoleValidators,storeRole)
 common_router.post("/like",auth,likeUnlikeVladation,postLike)
 common_router.post("/unLike",auth,likeUnlikeVladation,postUnlike)
 common_router.post("/postCount",auth,postIdLikeVladation,postLikeCount)
-
+//create permission apis 
+// common_router,post("/permission",auth)
 module.exports=common_router;
