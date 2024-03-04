@@ -6,6 +6,7 @@ const jwt=require("jsonwebtoken");
 const { sendMail } = require("../helpers/sendMail.js");
 const userPermissionModel = require("../models/userPermissionModel.js");
 const modelPermission = require("../models/modelPermission.js");
+const { default: mongoose } = require("mongoose");
 const secure= async(pass)=>{
  return await bcrypt.hash(pass,10);
 }
@@ -57,14 +58,12 @@ const register=async(req,res)=>{
      const permission=await modelPermission.find({is_Default:1})
      if(permission.length>0){
       const permissionData=[];
-      permission.forEach(async element => {
+    await Promise.all(permission.forEach(async element => {
         permissionData.push({
           permission_name:element.permission_name,
           permission_value:[0,1,2,3]
         })
-        
-     
-      });
+      }));
       await new userPermissionModel({
         user_id:savedData._id,
         permission:permissionData
@@ -145,7 +144,7 @@ const getPofile=async (req,res)=>{
     if(profileData){
       const result = await userModel.aggregate([
         {$match:{
-           _id:{$ne:profileData._id} 
+           _id:{$ne:new mongoose.Types.ObjectId(profileData._id)} 
         }},{
           $lookup:{
             from:"userpermissions",
@@ -161,7 +160,7 @@ const getPofile=async (req,res)=>{
             email:1,
             permission:{
               $cond:{
-                if:{$isArray:"permission"},
+                if:{$isArray:"$permission"},
                 then:{$arrayElemAt:["$permission",0]},
                 else:null
               }
